@@ -40,10 +40,10 @@ $cfg['Servers'][$i]['AllowNoPassword'] = false;
 $cfg['Servers'][$i]['controlhost'] = 'localhost';
 // $cfg['Servers'][$i]['controlport'] = '';
 $cfg['Servers'][$i]['controluser'] = 'WordPressUser';
-$cfg['Servers'][$i]['controlpass'] = '1234';
+$cfg['Servers'][$i]['controlpass'] = 'admin1234';
 
 /* Storage database and tables */
-$cfg['Servers'][$i]['pmadb'] = 'Wordpress';
+$cfg['Servers'][$i]['pmadb'] = 'WordPress';
 // $cfg['Servers'][$i]['bookmarktable'] = 'pma__bookmark';
 // $cfg['Servers'][$i]['relation'] = 'pma__relation';
 // $cfg['Servers'][$i]['table_info'] = 'pma__table_info';
