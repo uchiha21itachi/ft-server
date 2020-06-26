@@ -1,8 +1,9 @@
+
 echo " HELLOO WORLDDDDDD  "
 
 service mysql start
 
-mysql -e "CREATE DATABASE wordpress"
+mysql -e "CREATE DATABASE WordPress"
 
 mysql -e "GRANT ALL ON WordPress.* TO WordPressUser @'localhost' IDENTIFIED BY 'admin1234'";
 

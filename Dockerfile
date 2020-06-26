@@ -82,6 +82,14 @@ WORKDIR /var/www/wordpress
 RUN chown -R www-data:www-data *
 RUN chmod -R 755 *
 
+#Copying files from srcs
+WORKDIR /
+RUN echo "copying ssl"
+COPY ./srcs/ssl.sh  .
+
+RUN echo "Adding SSL Certificates"
+RUN bash ssl.sh
+
 #Removing default
 WORKDIR /etc/nginx/sites-enabled
 RUN ls -l
@@ -91,15 +99,11 @@ RUN rm default
 WORKDIR /
 RUN ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
 
+#Checking if previous commands were succesfull or not
 RUN ls -l /etc/nginx/sites-available/
 RUN ls -l /etc/nginx/sites-enabled/
 
-RUN echo "hell yeah kaalu randi"
-# RUN nginx -s reload
-RUN cat -n /etc/nginx/nginx.conf
-
-WORKDIR /etc/nginx/sites-enabled/
-RUN ls -l
+#Testing the nginx configuration
 WORKDIR /
 RUN nginx -t
 
