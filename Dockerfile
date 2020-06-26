@@ -6,8 +6,8 @@ FROM debian:buster
 RUN apt-get -y update &&  echo apt-get -y upgrade \
         && apt-get install -y nginx && echo "Nginx install done" \
             && apt-get clean && echo "clean done" \
-                && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
-
+                && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+                    && echo "daemon off;" >> /etc/nginx/nginx.conf
 
 #installing Curl
 RUN apt-get update \
@@ -42,13 +42,17 @@ RUN pwd
 COPY ./srcs/config.inc.php /var/www/phpmyadmin
 
 #Copying the configuration file for nginx from repo
-COPY ./srcs/wordpress.conf /etc/nginx/sites-avaiable/
+COPY ./srcs/wordpress.conf /etc/nginx/sites-available/
+
+RUN ls -l /etc/nginx/sites-available/
+RUN ls -l /etc/nginx/sites-enabled/
+
 
 #Creating symbolic link from new server block conf file and unlinking the default
-WORKDIR /etc/nginx/sites-enabled
-RUN rm *
-RUN ln -s /etc/nginx/sites-available/sample.com /etc/nginx/sites-enabled/
-RUN nginx -t
+# WORKDIR /etc/nginx/sites-enabled
+# RUN rm *
+# RUN ln -s /etc/nginx/sites-available/wordpress.conf .
+
 
 
 #installing PhpMyAdmin
@@ -71,13 +75,32 @@ RUN rm -rf wordpress
 
 #Copying the config file in wordpress
 RUN echo "copying wp-config.php"
-COPY ./srcs/    wp-config.php /var/www/wordpress
+COPY ./srcs/wp-config.php /var/www/wordpress
 
-#Giving permission to www-data group (Ngnix and Php run as www-data)
+#Giving the acces to user www-data (nginx and php)
 WORKDIR /var/www/wordpress
 RUN chown -R www-data:www-data *
 RUN chmod -R 755 *
 
+#Removing default
+WORKDIR /etc/nginx/sites-enabled
+RUN ls -l
+RUN rm default
+
+#Creating link list
+WORKDIR /
+RUN ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/
+
+RUN ls -l /etc/nginx/sites-available/
+RUN ls -l /etc/nginx/sites-enabled/
+
+RUN echo "hell yeah kaalu randi"
+# RUN nginx -s reload
+RUN cat -n /etc/nginx/nginx.conf
+
+WORKDIR /etc/nginx/sites-enabled/
+RUN ls -l
+WORKDIR /
 RUN nginx -t
 
 COPY ./srcs/start.sh .
